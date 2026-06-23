@@ -348,8 +348,11 @@
       choppyData = data.choppy_stocks || [];
 
       // Meta
+      const spUpdatedLine = data.sp_updated_at
+        ? `<br>SP Stocks updated: <span class="live">${data.sp_updated_at}</span>`
+        : "";
       document.getElementById("meta").innerHTML =
-        `Scanned: <span class="live">${data.generated_at || "—"}</span><br>
+        `Full scan: <span class="live">${data.generated_at || "—"}</span>${spUpdatedLine}<br>
          Total signals: <span class="live">${data.total_signals || 0}</span>`;
 
       buildTFButtons();
