@@ -212,6 +212,7 @@
     .badge-owned       { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
     .badge-nosetup     { background: rgba(74,85,104,0.12); color: var(--muted); border: 1px solid rgba(74,85,104,0.3); }
     .badge-choppy      { background: rgba(255,180,60,0.12); color: #ffb43c; border: 1px solid rgba(255,180,60,0.3); }
+    .badge-touch       { background: rgba(148,163,184,0.10); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
 
     /* SP Stocks tab — accent-bordered, set apart from timeframe buttons */
     .tf-btn-sp {
@@ -547,20 +548,22 @@
 
     const rows = spData.map(s => {
       const st = s.status || "";
-      const isBreakout = st === "BREAKOUT" || st === "1 CANDLE POST BREAKOUT" ||
+      const isBreakout  = st === "BREAKOUT" || st === "1 CANDLE POST BREAKOUT" ||
                          st === "2 CANDLES POST BREAKOUT" || st.startsWith("BROKE OUT");
-      const isNear     = st.startsWith("NEAR BREAKOUT");
-      const noSetup    = !s.timeframe;
+      const isNear      = st.startsWith("NEAR BREAKOUT");
+      const isTouchOnly = st.startsWith("TOUCHED 200 EMA");
+      const noSetup     = !s.timeframe;
 
       let badgeClass = "badge-near";
       if (st === "BREAKOUT") badgeClass = "badge-breakout";
       else if (st === "1 CANDLE POST BREAKOUT") badgeClass = "badge-1candle";
       else if (st === "2 CANDLES POST BREAKOUT" || st.startsWith("BROKE OUT")) badgeClass = "badge-2candle";
+      else if (isTouchOnly) badgeClass = "badge-touch";
       else if (noSetup) badgeClass = "badge-nosetup";
 
       const tfCell    = s.timeframe ? `<span class="tf-pill">${s.timeframe}</span>` : `<span class="resistance">—</span>`;
-      const closeCell = (s.close !== undefined) ? `₹${s.close.toLocaleString("en-IN")}` : "—";
-      const resCell   = (s.resistance !== undefined) ? `₹${s.resistance.toLocaleString("en-IN")}` : "—";
+      const closeCell = (s.close !== undefined && s.close !== null) ? `₹${s.close.toLocaleString("en-IN")}` : "—";
+      const resCell    = (s.resistance !== undefined && s.resistance !== null) ? `₹${s.resistance.toLocaleString("en-IN")}` : "—";
       const distCell  = isNear
         ? `<span class="rsi">${s.distance_pct.toFixed(1)}%</span>`
         : (isBreakout ? `<span class="resistance">at/above</span>` : `<span class="resistance">—</span>`);
